@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#7A59DA</color>
+    <color name="colorSecondary">#AB98E3</color>
+    <color name="colorPrimaryDark">#7A59DA</color>
+    <color name="colorAccent">#7A59DA</color>
+    <color name="textColor">#212121</color>
+    <color name="textColorSecondary">#424242</color>
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="needleColor">#FF000000</color>
+
+    <color name="roundedReactBgColor">#FFFFFF</color>
+    <color name="backgroundColorMessageView">#EFE9E5</color>
+
+    <color name="SubTextColor">#757C86</color>
+    <color name="greyTint">#FF8F9BB3</color>
+    <color name="warningColor">#FFA23A</color>
+    <color name="backgroundColorSecondary">#F5F5F5</color>
+    <color name="lite_white">#cccccc</color>
+    <color name="_white">#eeeeee</color>
+    <color name="textGrey">#86879E</color>
+    <color name="colorPrimary_grey">#C6C6EA</color>
+    <color name="reverse_white">#ffffff</color>
+    <color name="grey">#919191</color>
+    <color name="red">#DC4C4C</color>
+    <color name="red_light">#D65555</color>
+    <color name="green">#689F38</color>
+    <color name="wave_background">#D1D1D1</color>
+    <color name="linkColor">#3192E6</color>
+    <color name="dark_backgroundColor">#181818</color>
+    <color name="light_backgroundColor">#ffffff</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

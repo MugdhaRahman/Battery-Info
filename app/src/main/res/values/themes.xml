@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.BatteryInfo" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/textColor</item>
+        <item name="android:textColorHint">@color/textColorSecondary</item>
+        <item name="backgroundColor">@color/backgroundColor</item>
+        <item name="android:statusBarColor">@color/backgroundColorSecondary</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="IntroScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="o_mr1">shortEdges
+        </item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="WhiteTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:statusBarColor">@color/backgroundColor</item>
+        <item name="android:windowLightStatusBar" tools:ignore="ObsoleteSdkInt" tools:targetApi="m">
+            true
+        </item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+    </style>
+
+</resources>
