@@ -1,6 +1,9 @@
 package com.mrapps.batteryinfo.fragment
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
@@ -20,6 +23,14 @@ class FragmentHome : Fragment() {
 
     private val binding: FragmentHomeBinding by lazy {
         FragmentHomeBinding.inflate(layoutInflater)
+    }
+
+    private val batteryReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+                binding.abv.attachBatteryIntent(intent)
+            }
+        }
     }
 
     val handler = Handler(Looper.getMainLooper())
@@ -44,6 +55,10 @@ class FragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        requireActivity().registerReceiver(
+            batteryReceiver,
+            IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        )
         setupHalfGauge()
 
     }
@@ -119,6 +134,7 @@ class FragmentHome : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
+        requireActivity().unregisterReceiver(batteryReceiver)
     }
 
 
