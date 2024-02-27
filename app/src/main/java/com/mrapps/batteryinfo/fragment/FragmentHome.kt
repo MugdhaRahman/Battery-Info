@@ -1,5 +1,6 @@
 package com.mrapps.batteryinfo.fragment
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -26,8 +27,37 @@ class FragmentHome : Fragment() {
     }
 
     private val batteryReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @SuppressLint("SetTextI18n")
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent != null) {
+
+                val deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                val isCharging = deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING ||
+                        deviceStatus == BatteryManager.BATTERY_STATUS_FULL
+
+                if (isCharging) {
+                    binding.chargingStatus.text = "Charging"
+                    binding.chargingStatus.setTextColor(requireContext().getColor(R.color.green))
+                } else {
+                    binding.chargingStatus.text = "Discharging"
+                    binding.chargingStatus.setTextColor(requireContext().getColor(R.color.red))
+                }
+
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                val batteryPct = level / scale.toFloat()
+                val batteryPercentage = (batteryPct * 100).toInt()
+                binding.batteryPercentage.text = "$batteryPercentage%"
+
+                if (batteryPct * 100 == 100f) {
+                    binding.chargingStatus.text = "Fully Charged"
+                }
+
+                if (batteryPct * 100 < 20 && !isCharging) {
+                    binding.chargingStatus.text = "Low Battery"
+                }
+
+
                 binding.abv.attachBatteryIntent(intent)
             }
         }
@@ -63,7 +93,6 @@ class FragmentHome : Fragment() {
 
     }
 
-
     private fun setupHalfGauge() {
 
         range.color = requireContext().getColor(R.color.red)
@@ -86,8 +115,6 @@ class FragmentHome : Fragment() {
         binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
         binding.halfGauge.minValueTextColor = requireContext().getColor(R.color.red)
         binding.halfGauge.maxValueTextColor = requireContext().getColor(R.color.green)
-
-
     }
 
     private fun getAmperage(context: Context): String? {

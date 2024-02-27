@@ -104,7 +104,6 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="10dp" />
 
-
         </RelativeLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -123,15 +122,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.rejowan.abv.ABV
-                android:id="@+id/abv"
+            <LinearLayout
+                android:id="@+id/llBattery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                app:abvBatteryOrientation="portrait"
-                app:abvRadius="10"
-                app:abvSize="30" />
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <com.rejowan.abv.ABV
+                    android:id="@+id/abv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:abvBatteryOrientation="landscape"
+                    app:abvNormalBgColor="@color/colorSecondary"
+                    app:abvNormalLevelColor="@color/colorPrimary"
+                    app:abvRadius="10"
+                    app:abvSize="30" />
+
+                <TextView
+                    android:id="@+id/batteryPercentage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:text="100%"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/chargingStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="Charging"
+                android:textSize="16sp" />
+
 
         </RelativeLayout>
 
