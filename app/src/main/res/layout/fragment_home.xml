@@ -104,6 +104,20 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginBottom="10dp" />
 
+            <TextView
+                android:id="@+id/chargingStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/halfGauge"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="Charging"
+                android:textSize="16sp" />
+
+
         </RelativeLayout>
 
     </com.google.android.material.card.MaterialCardView>
@@ -126,7 +140,7 @@
                 android:id="@+id/llBattery"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
@@ -154,20 +168,6 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <TextView
-                android:id="@+id/chargingStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="Charging"
-                android:textSize="16sp" />
 
 
         </RelativeLayout>

@@ -49,6 +49,14 @@ class FragmentHome : Fragment() {
                 val batteryPercentage = (batteryPct * 100).toInt()
                 binding.batteryPercentage.text = "$batteryPercentage%"
 
+                if (isCharging || batteryPct * 100 == 100f) {
+                    binding.batteryPercentage.setTextColor(requireContext().getColor(R.color.green))
+                } else if (batteryPct * 100 < 10) {
+                    binding.batteryPercentage.setTextColor(requireContext().getColor(R.color.red))
+                } else {
+                    binding.batteryPercentage.setTextColor(requireContext().getColor(R.color.colorPrimary))
+                }
+
                 if (batteryPct * 100 == 100f) {
                     binding.chargingStatus.text = "Fully Charged"
                 }

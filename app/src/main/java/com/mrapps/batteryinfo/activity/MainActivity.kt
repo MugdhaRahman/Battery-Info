@@ -2,6 +2,7 @@ package com.mrapps.batteryinfo.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.mrapps.batteryinfo.R
 import com.mrapps.batteryinfo.adapter.ViewPagerAdapter
 import com.mrapps.batteryinfo.databinding.ActivityMainBinding
@@ -45,6 +46,23 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                when (position) {
+                    0 -> {
+                        binding.bottomBar.menu.findItem(R.id.n_home).isChecked = true
+                        binding.toolbarTitle.text = getString(R.string.app_name)
+                    }
+
+                    1 -> {
+                        binding.bottomBar.menu.findItem(R.id.n_monitor).isChecked = true
+                        binding.toolbarTitle.text = "Monitor"
+                    }
+                }
+            }
+        })
 
     }
 
