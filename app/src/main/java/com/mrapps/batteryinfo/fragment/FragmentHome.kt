@@ -280,7 +280,7 @@ class FragmentHome : Fragment() {
 
         val totalCapacity = getBatteryCapacity(requireActivity()).toInt()
 
-        binding.maxCapacity.text = "Max Capacity : $totalCapacity mAh"
+        binding.maxCapacity.text = "$totalCapacity mAh"
 
         //android version
         binding.version.text = Build.VERSION.RELEASE
@@ -347,7 +347,7 @@ class FragmentHome : Fragment() {
                 val chargeCounter =
                     batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
                 val currentCapacity = chargeCounter / 1000
-                binding.currentCapacity.text = "Current Capacity : $currentCapacity mAh"
+                binding.currentCapacity.text = "$currentCapacity mAh"
 
 
                 handler.postDelayed(this, 500)
@@ -362,7 +362,6 @@ class FragmentHome : Fragment() {
             @SuppressLint("SetTextI18n")
             override fun run() {
                 count++
-
                 //check is charging or not
                 val deviceStatus = requireActivity().registerReceiver(
                     null,
@@ -374,7 +373,7 @@ class FragmentHome : Fragment() {
                     deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
 
 
-                if (count % 5 == 0) {
+                if (count % 3 == 0) {
                     count = 0
                     batteryUseList.clear()
                 } else {
@@ -398,18 +397,16 @@ class FragmentHome : Fragment() {
                     val hours = positiveEstimatedTimeSeconds / 3600
                     val minutes = (positiveEstimatedTimeSeconds % 3600) / 60
 
-
                     if (!isCharging) {
                         binding.remainingTime.text =
-                            "Backup Time: ${hours.toInt()}hrs ${minutes.toInt()}min"
+                            "${hours.toInt()}hrs ${minutes.toInt()}min"
                     } else {
                         binding.remainingTime.text = "Charging"
                     }
 
-
                 }
 
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, 3000)
             }
         }
         handler.post(runnable2)
