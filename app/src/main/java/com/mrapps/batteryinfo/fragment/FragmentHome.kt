@@ -376,9 +376,12 @@ class FragmentHome : Fragment() {
 
                 if (count % 5 == 0) {
                     count = 0
+                    batteryUseList.clear()
                 } else {
+
                     val dischargingRate = getAmperage(requireActivity())!!.toInt()
                     batteryUseList.add(dischargingRate)
+
                     val averageDischargingRate = batteryUseList.average()
 
                     // Calculate current capacity
