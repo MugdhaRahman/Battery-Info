@@ -12,6 +12,8 @@
     <color name="roundedReactBgColor">#FFFFFF</color>
     <color name="backgroundColorMessageView">#EFE9E5</color>
 
+    <color name="electricBlue">#1F75FE</color>
+
     <color name="SubTextColor">#757C86</color>
     <color name="greyTint">#FF8F9BB3</color>
     <color name="warningColor">#FFA23A</color>
@@ -24,7 +26,9 @@
     <color name="grey">#919191</color>
     <color name="red">#DC4C4C</color>
     <color name="red_light">#D65555</color>
+    <color name="lightRed">#E87B7B</color>
     <color name="green">#689F38</color>
+    <color name="green_light">#1FDB00</color>
     <color name="wave_background">#D1D1D1</color>
     <color name="linkColor">#3192E6</color>
     <color name="dark_backgroundColor">#181818</color>

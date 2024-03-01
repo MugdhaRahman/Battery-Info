@@ -66,5 +66,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    data class BatteryData(val batteryLevel: Int, val time: Int)
+
+
 
 }
