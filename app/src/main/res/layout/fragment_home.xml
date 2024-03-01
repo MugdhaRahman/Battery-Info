@@ -305,7 +305,7 @@
                                 android:layout_gravity="start"
                                 android:fontFamily="sans-serif-medium"
                                 android:gravity="center"
-                                android:text="Charging Time :"
+                                android:text="Charging"
                                 android:textColor="@color/textColorSecondary"
                                 android:textSize="13sp" />
 

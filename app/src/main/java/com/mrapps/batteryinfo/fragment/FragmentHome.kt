@@ -254,8 +254,7 @@ class FragmentHome : Fragment() {
     private fun getAmperage(context: Context): String? {
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         var batteryCurrent =
-            -batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
-                .toFloat()
+            -batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW).toFloat()
 
         return if (batteryCurrent < 0) {
             if (abs(batteryCurrent / 1000) < 1.0) {
@@ -271,6 +270,27 @@ class FragmentHome : Fragment() {
             df.format(batteryCurrent.toDouble())
         }
     }
+
+    private fun getAmperageSamsung(context: Context): String? {
+        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        var batteryCurrent =
+            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW).toFloat()
+
+        return if (batteryCurrent < 0) {
+            if (abs(batteryCurrent / 1000) < 1.0) {
+                batteryCurrent *= 1000
+            }
+            val df = DecimalFormat("#.##")
+            df.format((batteryCurrent / 1000).toDouble())
+        } else {
+            if (abs(batteryCurrent) > 100000.0) {
+                batteryCurrent /= 1000
+            }
+            val df = DecimalFormat("#.##")
+            df.format(batteryCurrent.toDouble())
+        }
+    }
+
 
     private fun setupOnClicks() {
 
@@ -334,9 +354,15 @@ class FragmentHome : Fragment() {
         val runnable = object : Runnable {
             @SuppressLint("SetTextI18n")
             override fun run() {
-                val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
 
-                binding.halfGauge.value = currentValue
+                val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
+                val currentValueSamsung = getAmperageSamsung(requireActivity())?.toDouble() ?: 0.0
+
+                if (Build.MANUFACTURER.equals("samsung", ignoreCase = true)) {
+                    binding.halfGauge.value = currentValueSamsung
+                } else {
+                    binding.halfGauge.value = currentValue
+                }
 
                 val amp = getAmperage(requireActivity())!!.toFloat()
                 val df = DecimalFormat("#.##")
@@ -359,10 +385,8 @@ class FragmentHome : Fragment() {
                 val currentCapacity = chargeCounter / 1000
                 binding.currentCapacity.text = "$currentCapacity mAh"
 
-
                 handler.postDelayed(this, 500)
             }
-
 
         }
 
@@ -373,15 +397,14 @@ class FragmentHome : Fragment() {
             override fun run() {
                 count++
                 //check is charging or not
-                val deviceStatus = requireActivity().registerReceiver(
-                    null,
-                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                )
-                    ?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-
-                val isCharging =
-                    deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
-
+//                val deviceStatus = requireActivity().registerReceiver(
+//                    null,
+//                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+//                )
+//                    ?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+//
+//                val isCharging =
+//                    deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
 
                 if (count % 3 == 0) {
                     count = 0
@@ -407,8 +430,7 @@ class FragmentHome : Fragment() {
                     val hours = positiveEstimatedTimeSeconds / 3600
                     val minutes = (positiveEstimatedTimeSeconds % 3600) / 60
 
-                    binding.remainingTime.text =
-                        "${hours.toInt()}hrs ${minutes.toInt()}min"
+                    binding.remainingTime.text = "${hours.toInt()}hrs ${minutes.toInt()}min"
 
                 }
 
