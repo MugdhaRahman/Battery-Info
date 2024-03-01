@@ -57,6 +57,7 @@ class FragmentHome : Fragment() {
                 val batteryPercentage = (batteryPct * 100).toInt()
                 binding.batteryPercentage.text = "$batteryPercentage%"
 
+
                 if (isCharging || batteryPct * 100 == 100f) {
                     binding.batteryPercentage.setTextColor(requireContext().getColor(R.color.green))
                 } else if (batteryPct * 100 < 10) {
@@ -105,10 +106,10 @@ class FragmentHome : Fragment() {
                 binding.watt.text = decimalFormat.format(watt) + "W"
 
                 if (isCharging) {
-                    binding.wattTitle.text = "Charging WH"
+                    binding.wattTitle.text = "Charging W"
                     binding.wattIcon.setColorFilter(requireContext().getColor(R.color.colorPrimary))
                 } else {
-                    binding.wattTitle.text = "Discharging WH"
+                    binding.wattTitle.text = "Discharging W"
                     binding.wattIcon.setColorFilter(requireContext().getColor(R.color.red))
                 }
 
@@ -117,8 +118,6 @@ class FragmentHome : Fragment() {
                     BatteryManager.BATTERY_HEALTH_COLD -> {
                         binding.health.text = "Cold"
                         binding.health.setTextColor(requireContext().getColor(R.color.linkColor))
-                        binding.healthCard.strokeColor =
-                            requireContext().getColor(R.color.linkColor)
                     }
 
                     BatteryManager.BATTERY_HEALTH_DEAD -> {
@@ -183,10 +182,20 @@ class FragmentHome : Fragment() {
                     }
                 }
 
+                if (!isCharging) {
+                    binding.llChargingTime.visibility = View.GONE
+                    binding.llBackupTime.visibility = View.VISIBLE
+                } else {
+                    binding.llChargingTime.visibility = View.VISIBLE
+                    binding.llBackupTime.visibility = View.GONE
+                }
+
+
                 binding.abv.attachBatteryIntent(intent)
             }
         }
     }
+
 
     val handler = Handler(Looper.getMainLooper())
 
@@ -245,7 +254,8 @@ class FragmentHome : Fragment() {
     private fun getAmperage(context: Context): String? {
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         var batteryCurrent =
-            -batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW).toFloat()
+            -batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+                .toFloat()
 
         return if (batteryCurrent < 0) {
             if (abs(batteryCurrent / 1000) < 1.0) {
@@ -397,12 +407,8 @@ class FragmentHome : Fragment() {
                     val hours = positiveEstimatedTimeSeconds / 3600
                     val minutes = (positiveEstimatedTimeSeconds % 3600) / 60
 
-                    if (!isCharging) {
-                        binding.remainingTime.text =
-                            "${hours.toInt()}hrs ${minutes.toInt()}min"
-                    } else {
-                        binding.remainingTime.text = "Charging"
-                    }
+                    binding.remainingTime.text =
+                        "${hours.toInt()}hrs ${minutes.toInt()}min"
 
                 }
 
