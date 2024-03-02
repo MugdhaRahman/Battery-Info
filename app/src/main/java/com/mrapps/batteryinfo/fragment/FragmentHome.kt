@@ -236,20 +236,19 @@ class FragmentHome : Fragment() {
 
     private fun setupHalfGauge() {
 
+
         range.color = requireContext().getColor(R.color.red)
-        range.from = -4000.00
+        range.from = -2000.00
         range.to = 0.00
 
         range2.color = requireContext().getColor(R.color.green)
         range2.from = 1.00
-        range2.to = 4000.0
+        range2.to = 2000.00
 
         //add color ranges to gauge
         binding.halfGauge.addRange(range)
         binding.halfGauge.addRange(range2)
 
-        binding.halfGauge.minValue = -4000.00
-        binding.halfGauge.maxValue = 4000.00
 
 
         binding.halfGauge.setNeedleColor(requireContext().getColor(R.color.needleColor))
@@ -367,6 +366,25 @@ class FragmentHome : Fragment() {
         val runnable = object : Runnable {
             @SuppressLint("SetTextI18n")
             override fun run() {
+
+                val maxIn = getAmperage(requireActivity())!!.toFloat()
+
+                if (maxIn >= range2.to) {
+                    range2.to = maxIn.toDouble() + 1000
+                    range.from = -range2.to
+                    binding.halfGauge.maxValue = range2.to
+                    binding.halfGauge.minValue = range.from
+                } else {
+                    range.from = -2000.00
+                    range2.to = 2000.0
+                    binding.halfGauge.minValue = -2000.00
+                    binding.halfGauge.maxValue = 2000.00
+                }
+
+                //add color ranges to gauge
+                binding.halfGauge.addRange(range)
+                binding.halfGauge.addRange(range2)
+
 
                 val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
 
