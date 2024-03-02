@@ -42,8 +42,6 @@ class FragmentMonitor : Fragment() {
     var maxVoltage = 0.0
     var minVoltage = 0.0
 
-    var count = 0
-
     var capacity = 0f
     var voltage = 0f
 
@@ -61,6 +59,12 @@ class FragmentMonitor : Fragment() {
                 val deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
                 val isCharging =
                     deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
+
+                if (isCharging) {
+                    binding.batteryStatus.text = "Charging"
+                } else {
+                    binding.batteryStatus.text = "Discharging"
+                }
 
                 val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
                 val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
