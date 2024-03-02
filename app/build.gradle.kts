@@ -52,4 +52,7 @@ dependencies {
     //battery info
     implementation("com.github.ahmmedrejowan:AndroidBatteryView:0.1")
 
+    // MPAndroidChart
+    implementation("com.github.r3jo1:MPAndroidChart-Reworked:1.0")
+
 }

@@ -871,6 +871,7 @@
                             android:layout_weight="1"
                             android:fontFamily="sans-serif-medium"
                             android:gravity="center"
+                            android:maxLines="2"
                             android:text="model"
                             android:textColor="@color/textColor"
                             android:textSize="15sp" />

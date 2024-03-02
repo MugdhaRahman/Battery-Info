@@ -32,6 +32,9 @@ class FragmentHome : Fragment() {
         FragmentHomeBinding.inflate(layoutInflater)
     }
 
+    private var isReceiverRegistered = false
+
+
     val batteryUseList = mutableListOf<Int>()
 
     var count = 0
@@ -221,9 +224,12 @@ class FragmentHome : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().registerReceiver(
-            batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        )
+        if (!isReceiverRegistered) {
+            requireActivity().registerReceiver(
+                batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            )
+            isReceiverRegistered = true
+        }
 
         setupHalfGauge()
 
@@ -236,20 +242,17 @@ class FragmentHome : Fragment() {
 
     private fun setupHalfGauge() {
 
-
         range.color = requireContext().getColor(R.color.red)
-        range.from = -2000.00
+        range.from = -3000.00
         range.to = 0.00
 
         range2.color = requireContext().getColor(R.color.green)
         range2.from = 1.00
-        range2.to = 2000.00
+        range2.to = 3000.00
 
         //add color ranges to gauge
         binding.halfGauge.addRange(range)
         binding.halfGauge.addRange(range2)
-
-
 
         binding.halfGauge.setNeedleColor(requireContext().getColor(R.color.needleColor))
         binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
@@ -375,10 +378,10 @@ class FragmentHome : Fragment() {
                     binding.halfGauge.maxValue = range2.to
                     binding.halfGauge.minValue = range.from
                 } else {
-                    range.from = -2000.00
-                    range2.to = 2000.0
-                    binding.halfGauge.minValue = -2000.00
-                    binding.halfGauge.maxValue = 2000.00
+                    range.from = -3000.00
+                    range2.to = 3000.0
+                    binding.halfGauge.minValue = -3000.00
+                    binding.halfGauge.maxValue = 3000.00
                 }
 
                 //add color ranges to gauge
@@ -468,10 +471,8 @@ class FragmentHome : Fragment() {
 
                     //check if usb
                     val deviceStatus = requireActivity().registerReceiver(
-                        null,
-                        IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                    )
-                        ?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
+                        null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                    )?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
 
                     if (deviceStatus == BATTERY_PLUGGED_USB) {
                         binding.estimatedTime.text = "USB Charging"
@@ -493,6 +494,10 @@ class FragmentHome : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        if (isReceiverRegistered) {
+            requireActivity().unregisterReceiver(batteryReceiver)
+            isReceiverRegistered = false
+        }
         handler.removeCallbacksAndMessages(null)
         handler2.removeCallbacksAndMessages(null)
     }
@@ -501,7 +506,10 @@ class FragmentHome : Fragment() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
         handler2.removeCallbacksAndMessages(null)
-        requireActivity().unregisterReceiver(batteryReceiver)
+        if (isReceiverRegistered) {
+            requireActivity().unregisterReceiver(batteryReceiver)
+            isReceiverRegistered = false
+        }
     }
 
 

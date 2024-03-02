@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CircleProgress">
+        <attr name="circle_progress" format="integer" />
+        <attr name="circle_max" format="integer" />
+
+        <attr name="circle_unfinished_color" format="color" />
+        <attr name="circle_finished_color" format="color" />
+
+        <attr name="circle_text_size" format="dimension" />
+        <attr name="circle_text_color" format="color" />
+
+        <attr name="circle_prefix_text" format="string" />
+        <attr name="circle_suffix_text" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LiveChart">
+        <attr name="labelTextColor" format="reference|color" />
+        <attr name="pathColor" format="reference|color"/>
+        <attr name="secondPathColor" format="reference|color"/>
+        <attr name="fillColor" format="reference|color"/>
+        <attr name="baselineColor" format="reference|color"/>
+        <attr name="boundsColor" format="reference|color"/>
+        <attr name="positiveColor" format="reference|color"/>
+        <attr name="negativeColor" format="reference|color"/>
+        <attr name="mainCornerRadius" format="dimension"/>
+        <attr name="secondCornerRadius" format="dimension"/>
+        <attr name="pathStrokeWidth" format="dimension"/>
+        <attr name="baselineStrokeWidth" format="dimension"/>
+        <attr name="baselineDashGap" format="dimension"/>
+        <attr name="labelTextHeight" format="dimension"/>
+        <attr name="overlayLineColor" format="reference|color"/>
+        <attr name="overlayCircleColor" format="reference|color"/>
+        <attr name="overlayCircleDiameter" format="dimension"/>
+    </declare-styleable>
+</resources>

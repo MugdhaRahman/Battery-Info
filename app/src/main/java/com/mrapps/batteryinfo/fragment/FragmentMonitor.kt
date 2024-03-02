@@ -1,21 +1,340 @@
 package com.mrapps.batteryinfo.fragment
 
+import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.graphics.Color
+import android.os.BatteryManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.mrapps.batteryinfo.R
+import com.mrapps.batteryinfo.databinding.FragmentMonitorBinding
+import com.mrapps.batteryinfo.meter.Range
+import com.rejowan.chart.components.XAxis
+import com.rejowan.chart.data.Entry
+import com.rejowan.chart.data.LineData
+import com.rejowan.chart.data.LineDataSet
+import com.rejowan.chart.interfaces.datasets.ILineDataSet
+import java.text.DecimalFormat
+import kotlin.math.abs
 
 class FragmentMonitor : Fragment() {
 
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_monitor, container, false)
+    private val binding: FragmentMonitorBinding by lazy {
+        FragmentMonitorBinding.inflate(layoutInflater)
     }
 
+    private var isReceiverRegistered = false
+
+
+    var maxPower = 0.0
+    var minPower = 0.0
+    var maxCapacity = 0.0
+    var minCapacity = 0.0
+    var maxVoltage = 0.0
+    var minVoltage = 0.0
+
+    var count = 0
+
+    var capacity = 0f
+    var voltage = 0f
+
+    val handler = Handler(Looper.getMainLooper())
+
+    val range = Range()
+    val range2 = Range()
+
+
+    private val batteryReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        @SuppressLint("SetTextI18n")
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent != null) {
+
+                val deviceStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+                val isCharging =
+                    deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
+
+                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+                val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+                val batteryPct = level / scale.toFloat()
+                val batteryPercentage = (batteryPct * 100).toInt()
+
+                val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
+
+                val batteryManager =
+                    requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                val chargeCounter =
+                    batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+                capacity = (chargeCounter / 1000).toFloat()
+
+
+                //battery voltage
+                var d = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, -1).toDouble().also {
+                    Double
+                }
+                if (d > 12) {
+                    d /= 1000.0
+                }
+                val decimalFormat = DecimalFormat("#.##")
+                voltage = decimalFormat.format(d).toFloat()
+
+                //battery temperature
+                val temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toDouble()
+
+
+            }
+        }
+    }
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (!isReceiverRegistered) {
+            requireActivity().registerReceiver(
+                batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            )
+            isReceiverRegistered = true
+        }
+
+        setupHalfGauge()
+
+        setupBattery()
+
+    }
+
+    private fun setupHalfGauge() {
+
+        range.color = requireContext().getColor(R.color.red)
+        range.from = -1000.00
+        range.to = 0.00
+
+        range2.color = requireContext().getColor(R.color.green)
+        range2.from = 1.00
+        range2.to = 1000.00
+
+        //add color ranges to gauge
+        binding.halfGauge.addRange(range)
+        binding.halfGauge.addRange(range2)
+
+        binding.halfGauge.setNeedleColor(requireContext().getColor(R.color.needleColor))
+        binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
+        binding.halfGauge.minValueTextColor = requireContext().getColor(R.color.red)
+        binding.halfGauge.maxValueTextColor = requireContext().getColor(R.color.green)
+
+    }
+
+    private fun setupBattery() {
+        binding.batteryChart.description.isEnabled = false
+        binding.batteryChart.setPinchZoom(true)
+        binding.batteryChart.setDrawGridBackground(false)
+        binding.batteryChart.isDragEnabled = true
+        binding.batteryChart.setScaleEnabled(true)
+        binding.batteryChart.setTouchEnabled(true)
+
+        val xAxis: XAxis = binding.batteryChart.xAxis
+        xAxis.isEnabled = false
+
+        binding.batteryChart.axisLeft.isEnabled = false
+        binding.batteryChart.axisRight.isEnabled = true
+
+        val yAxis = binding.batteryChart.axisRight
+        yAxis.textColor = requireActivity().getColor(R.color.textColor)
+        binding.batteryChart.axisLeft.setDrawGridLines(false)
+        binding.batteryChart.animateXY(1500, 1500)
+
+        binding.batteryChart.legend.isEnabled = false
+
+        val data = LineData()
+        binding.batteryChart.data = data
+
+    }
+
+
+    private fun updateBattery() {
+
+        val lineData = binding.batteryChart.data
+        if (lineData != null) {
+            var set: ILineDataSet? = lineData.getDataSetByIndex(0)
+
+
+            if (set == null) {
+                set = createSet()
+                lineData.addDataSet(set)
+
+
+            }
+
+            lineData.addEntry(
+                getAmperage(requireContext())?.let {
+                    Entry(
+                        set.entryCount.toFloat(),
+                        it.toFloat()
+                    )
+                }, 0
+            )
+
+            if (set.entryCount > 25) {
+                set.removeFirst()
+                for (i in 0 until set.entryCount) {
+                    val entry = set.getEntryForIndex(i)
+                    entry.x = entry.x - 1
+                }
+            }
+
+
+            lineData.notifyDataChanged()
+            binding.batteryChart.notifyDataSetChanged()
+            binding.batteryChart.invalidate()
+
+
+//            if (getAmperage(requireContext())!!.contains("-")) {
+//
+//            } else {
+//
+//            }
+        }
+
+
+    }
+
+    private fun createSet(): LineDataSet {
+        val lineDataSet = LineDataSet(null, "")
+        lineDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        lineDataSet.cubicIntensity = 0.4f
+        lineDataSet.setDrawFilled(false)
+        lineDataSet.setDrawCircles(false)
+        lineDataSet.lineWidth = 1.8f
+        lineDataSet.circleRadius = 4f
+        lineDataSet.setCircleColor(requireActivity().getColor(R.color.textColor))
+        lineDataSet.highLightColor = Color.rgb(244, 117, 117)
+        lineDataSet.color = requireActivity().getColor(R.color.colorPrimary)
+        lineDataSet.fillAlpha = 100
+        lineDataSet.setDrawHorizontalHighlightIndicator(false)
+        lineDataSet.setDrawValues(false)
+        return lineDataSet
+    }
+
+
+    private fun getAmperage(context: Context): String? {
+        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        var batteryCurrent =
+            -batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW).toFloat()
+
+        return if (batteryCurrent < 0) {
+            if (abs(batteryCurrent / 1000) < 1.0) {
+                batteryCurrent *= 1000
+            }
+            val df = DecimalFormat("#.##")
+            df.format((batteryCurrent / 1000).toDouble())
+        } else {
+            if (abs(batteryCurrent) > 100000.0) {
+                batteryCurrent /= 1000
+            }
+            val df = DecimalFormat("#.##")
+            df.format(batteryCurrent.toDouble())
+        }
+    }
+
+    @SuppressLint("PrivateApi")
+    fun getBatteryCapacity(context: Context?): Double {
+        val obj: Any? = try {
+            Class.forName("com.android.internal.os.PowerProfile").getConstructor(
+                *arrayOf<Class<*>>(
+                    Context::class.java
+                )
+            ).newInstance(context)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+        return try {
+            Class.forName("com.android.internal.os.PowerProfile").getMethod(
+                "getAveragePower", *arrayOf<Class<*>>(
+                    String::class.java
+                )
+            ).invoke(obj, *arrayOf<Any>("battery.capacity")) as Double
+        } catch (e2: Exception) {
+            e2.printStackTrace()
+            0.0
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().registerReceiver(
+            batteryReceiver, IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+        )
+
+        val runnable = object : Runnable {
+            @SuppressLint("SetTextI18n")
+            override fun run() {
+
+                val maxIn = getAmperage(requireActivity())!!.toFloat()
+
+                if (maxIn >= range2.to) {
+                    range2.to = maxIn.toDouble() + 1000
+                    range.from = -range2.to
+                    binding.halfGauge.maxValue = range2.to
+                    binding.halfGauge.minValue = range.from
+                } else {
+                    range.from = -1000.00
+                    range2.to = 1000.0
+                    binding.halfGauge.minValue = -1000.00
+                    binding.halfGauge.maxValue = 1000.00
+                }
+
+                //add color ranges to gauge
+                binding.halfGauge.addRange(range)
+                binding.halfGauge.addRange(range2)
+
+                val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
+
+                binding.halfGauge.value = currentValue
+
+
+                updateBattery()
+
+
+                handler.postDelayed(this, 1000)
+            }
+        }
+
+        handler.post(runnable)
+
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isReceiverRegistered) {
+            requireActivity().unregisterReceiver(batteryReceiver)
+            isReceiverRegistered = false
+        }
+        handler.removeCallbacksAndMessages(null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isReceiverRegistered) {
+            requireActivity().unregisterReceiver(batteryReceiver)
+            isReceiverRegistered = false
+        }
+        handler.removeCallbacksAndMessages(null)
+
+    }
 }
