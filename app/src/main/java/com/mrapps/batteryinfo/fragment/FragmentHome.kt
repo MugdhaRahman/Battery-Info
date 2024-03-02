@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.BatteryManager.BATTERY_PLUGGED_USB
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -163,7 +165,7 @@ class FragmentHome : Fragment() {
                         binding.powerIcon.setColorFilter(requireContext().getColor(R.color.electricBlue))
                     }
 
-                    BatteryManager.BATTERY_PLUGGED_USB -> {
+                    BATTERY_PLUGGED_USB -> {
                         binding.powerSource.text = "USB"
                         binding.powerIcon.setColorFilter(requireContext().getColor(R.color.electricBlue))
                         binding.powerSource.setTextColor(requireContext().getColor(R.color.electricBlue))
@@ -191,6 +193,10 @@ class FragmentHome : Fragment() {
                 }
 
 
+
+
+
+
                 binding.abv.attachBatteryIntent(intent)
             }
         }
@@ -198,6 +204,7 @@ class FragmentHome : Fragment() {
 
 
     val handler = Handler(Looper.getMainLooper())
+    val handler2 = Handler(Looper.getMainLooper())
 
     val range = Range()
     val range2 = Range()
@@ -348,6 +355,12 @@ class FragmentHome : Fragment() {
         }
     }
 
+    private fun formatTime(seconds: Long): String {
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        return "${hours}hrs ${minutes}min"
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -356,6 +369,7 @@ class FragmentHome : Fragment() {
             override fun run() {
 
                 val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
+
                 val currentValueSamsung = getAmperageSamsung(requireActivity())?.toDouble() ?: 0.0
 
                 if (Build.MANUFACTURER.equals("samsung", ignoreCase = true)) {
@@ -363,6 +377,9 @@ class FragmentHome : Fragment() {
                 } else {
                     binding.halfGauge.value = currentValue
                 }
+
+                binding.halfGauge.value = currentValue
+
 
                 val amp = getAmperage(requireActivity())!!.toFloat()
                 val df = DecimalFormat("#.##")
@@ -396,15 +413,6 @@ class FragmentHome : Fragment() {
             @SuppressLint("SetTextI18n")
             override fun run() {
                 count++
-                //check is charging or not
-//                val deviceStatus = requireActivity().registerReceiver(
-//                    null,
-//                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-//                )
-//                    ?.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
-//
-//                val isCharging =
-//                    deviceStatus == BatteryManager.BATTERY_STATUS_CHARGING || deviceStatus == BatteryManager.BATTERY_STATUS_FULL
 
                 if (count % 3 == 0) {
                     count = 0
@@ -422,22 +430,45 @@ class FragmentHome : Fragment() {
                     val chargeCounter =
                         batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
                     val currentCapacity = chargeCounter / 1000
-
                     val estimatedTimeSeconds = (currentCapacity / averageDischargingRate) * 3600
-
                     val positiveEstimatedTimeSeconds = abs(estimatedTimeSeconds)
-
                     val hours = positiveEstimatedTimeSeconds / 3600
                     val minutes = (positiveEstimatedTimeSeconds % 3600) / 60
+
+
+                    val totalCapacity = getBatteryCapacity(requireActivity()).toInt()
+                    val remainingCapacity = totalCapacity - currentCapacity
+
+                    Log.e("TAG", "remainingCp: $remainingCapacity")
+
+                    val timeInSeconds =
+                        (remainingCapacity.toDouble() / averageDischargingRate) * 3600
+
+                    Log.e("TAG", "timeInSeconds: $timeInSeconds")
+
+                    val formattedTime = formatTime(timeInSeconds.toLong())
+
+                    //check if usb
+                    val deviceStatus = requireActivity().registerReceiver(
+                        null,
+                        IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                    )
+                        ?.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)
+
+                    if (deviceStatus == BATTERY_PLUGGED_USB) {
+                        binding.estimatedTime.text = "USB Charging"
+                    } else {
+                        binding.estimatedTime.text = formattedTime
+                    }
 
                     binding.remainingTime.text = "${hours.toInt()}hrs ${minutes.toInt()}min"
 
                 }
 
-                handler.postDelayed(this, 3000)
+                handler2.postDelayed(this, 3000)
             }
         }
-        handler.post(runnable2)
+        handler2.post(runnable2)
 
 
     }
@@ -445,11 +476,13 @@ class FragmentHome : Fragment() {
     override fun onPause() {
         super.onPause()
         handler.removeCallbacksAndMessages(null)
+        handler2.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
+        handler2.removeCallbacksAndMessages(null)
         requireActivity().unregisterReceiver(batteryReceiver)
     }
 
