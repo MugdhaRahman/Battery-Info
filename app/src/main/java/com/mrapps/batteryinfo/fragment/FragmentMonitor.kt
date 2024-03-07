@@ -50,6 +50,10 @@ class FragmentMonitor : Fragment() {
     val range = Range()
     val range2 = Range()
 
+    val rangeCapacity = Range()
+    val range2Capacity = Range()
+    val range3Capacity = Range()
+
 
     private val batteryReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         @SuppressLint("SetTextI18n")
@@ -119,6 +123,8 @@ class FragmentMonitor : Fragment() {
 
         setupBattery()
 
+        setupHalfGaugeCapacity()
+
     }
 
     private fun setupHalfGauge() {
@@ -139,6 +145,31 @@ class FragmentMonitor : Fragment() {
         binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
         binding.halfGauge.minValueTextColor = requireContext().getColor(R.color.red)
         binding.halfGauge.maxValueTextColor = requireContext().getColor(R.color.green)
+
+    }
+
+    private fun setupHalfGaugeCapacity() {
+
+        val totalCapacity = getBatteryCapacity(requireContext())
+
+        rangeCapacity.color = requireContext().getColor(R.color.red)
+        rangeCapacity.from = 0.0
+        rangeCapacity.to = totalCapacity / 4 - 1
+        range2Capacity.color = requireContext().getColor(R.color.warningColor)
+        range2Capacity.to = totalCapacity / 4
+        range2Capacity.from = totalCapacity / 2 - 1
+        range3Capacity.color = requireContext().getColor(R.color.green)
+        range3Capacity.from = totalCapacity / 2
+        range3Capacity.to = totalCapacity
+
+        binding.halfGaugeCapacity.addRange(rangeCapacity)
+        binding.halfGaugeCapacity.addRange(range2Capacity)
+        binding.halfGaugeCapacity.addRange(range3Capacity)
+
+        binding.halfGaugeCapacity.setNeedleColor(requireContext().getColor(R.color.needleColor))
+        binding.halfGaugeCapacity.valueColor = requireContext().getColor(R.color.textColor)
+        binding.halfGaugeCapacity.minValueTextColor = requireContext().getColor(R.color.red)
+        binding.halfGaugeCapacity.maxValueTextColor = requireContext().getColor(R.color.green)
 
     }
 
@@ -216,6 +247,50 @@ class FragmentMonitor : Fragment() {
 
     }
 
+    private fun updateBatteryCapacity() {
+
+        val batteryManager =
+            requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        val chargeCounter =
+            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+        val currentCapacity = chargeCounter / 1000
+
+        val lineData = binding.capacityChart.data
+        if (lineData != null) {
+            var set: ILineDataSet? = lineData.getDataSetByIndex(0)
+
+            if (set == null) {
+                set = createSet()
+                lineData.addDataSet(set)
+            }
+
+            lineData.addEntry(
+                currentCapacity?.let {
+                    Entry(
+                        set.entryCount.toFloat(),
+                        it.toFloat()
+                    )
+                }, 0
+            )
+
+            if (set.entryCount > 25) {
+                set.removeFirst()
+                for (i in 0 until set.entryCount) {
+                    val entry = set.getEntryForIndex(i)
+                    entry.x = entry.x - 1
+                }
+            }
+
+            lineData.notifyDataChanged()
+            binding.capacityChart.notifyDataSetChanged()
+            binding.capacityChart.invalidate()
+
+
+        }
+    }
+
+
+
     private fun createSet(): LineDataSet {
         val lineDataSet = LineDataSet(null, "")
         lineDataSet.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
@@ -289,6 +364,13 @@ class FragmentMonitor : Fragment() {
             override fun run() {
 
                 val maxIn = getAmperage(requireActivity())!!.toFloat()
+                val totalCapacity = getBatteryCapacity(requireContext())
+
+                val batteryManager =
+                    requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                val chargeCounter =
+                    batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+                val currentCapacity = chargeCounter / 1000
 
                 if (maxIn >= range2.to) {
                     range2.to = maxIn.toDouble() + 1000
@@ -307,11 +389,19 @@ class FragmentMonitor : Fragment() {
                 binding.halfGauge.addRange(range2)
 
                 val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
-
                 binding.halfGauge.value = currentValue
 
+                binding.halfGaugeCapacity.addRange(rangeCapacity)
+                binding.halfGaugeCapacity.addRange(range2Capacity)
+                binding.halfGaugeCapacity.addRange(range3Capacity)
+
+                binding.halfGaugeCapacity.minValue = 0.0
+                binding.halfGaugeCapacity.maxValue = totalCapacity
+
+                binding.halfGaugeCapacity.value = currentCapacity.toDouble()
 
                 updateBattery()
+                updateBatteryCapacity()
 
 
                 handler.postDelayed(this, 1000)
