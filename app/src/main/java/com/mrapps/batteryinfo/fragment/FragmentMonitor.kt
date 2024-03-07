@@ -34,14 +34,6 @@ class FragmentMonitor : Fragment() {
 
     private var isReceiverRegistered = false
 
-
-    var maxPower = 0.0
-    var minPower = 0.0
-    var maxCapacity = 0.0
-    var minCapacity = 0.0
-    var maxVoltage = 0.0
-    var minVoltage = 0.0
-
     var capacity = 0f
     var voltage = 0f
 
@@ -53,6 +45,15 @@ class FragmentMonitor : Fragment() {
     val rangeCapacity = Range()
     val range2Capacity = Range()
     val range3Capacity = Range()
+
+    val rangeVoltage = Range()
+    val range2Voltage = Range()
+    val range3Voltage = Range()
+
+    val rangeTemperature = Range()
+    val range2Temperature = Range()
+    val range3Temperature = Range()
+    val range4Temperature = Range()
 
 
     private val batteryReceiver: BroadcastReceiver = object : BroadcastReceiver() {
