@@ -122,7 +122,7 @@ class FragmentMonitor : Fragment() {
         setupHalfGauge()
 
         setupBattery()
-
+        setupCapacity()
         setupHalfGaugeCapacity()
 
     }
@@ -199,6 +199,32 @@ class FragmentMonitor : Fragment() {
 
     }
 
+    private fun setupCapacity() {
+        binding.capacityChart.description.isEnabled = false
+        binding.capacityChart.setPinchZoom(true)
+        binding.capacityChart.setDrawGridBackground(false)
+        binding.capacityChart.isDragEnabled = true
+        binding.capacityChart.setScaleEnabled(true)
+        binding.capacityChart.setTouchEnabled(true)
+
+        val xAxis: XAxis = binding.capacityChart.xAxis
+        xAxis.isEnabled = false
+
+        binding.capacityChart.axisLeft.isEnabled = false
+        binding.capacityChart.axisRight.isEnabled = true
+
+        val yAxis = binding.capacityChart.axisRight
+        yAxis.textColor = requireActivity().getColor(R.color.textColor)
+        binding.capacityChart.axisLeft.setDrawGridLines(false)
+        binding.capacityChart.animateXY(1500, 1500)
+
+        binding.capacityChart.legend.isEnabled = false
+
+        val data = LineData()
+        binding.capacityChart.data = data
+
+    }
+
 
     private fun updateBattery() {
 
@@ -253,7 +279,7 @@ class FragmentMonitor : Fragment() {
             requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         val chargeCounter =
             batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
-        val currentCapacity = chargeCounter / 1000
+        val currentCapacity = chargeCounter / 1000f
 
         val lineData = binding.capacityChart.data
         if (lineData != null) {
@@ -264,14 +290,7 @@ class FragmentMonitor : Fragment() {
                 lineData.addDataSet(set)
             }
 
-            lineData.addEntry(
-                currentCapacity?.let {
-                    Entry(
-                        set.entryCount.toFloat(),
-                        it.toFloat()
-                    )
-                }, 0
-            )
+            lineData.addEntry(Entry(set.entryCount.toFloat(), currentCapacity), 0)
 
             if (set.entryCount > 25) {
                 set.removeFirst()
@@ -281,14 +300,12 @@ class FragmentMonitor : Fragment() {
                 }
             }
 
+
             lineData.notifyDataChanged()
             binding.capacityChart.notifyDataSetChanged()
             binding.capacityChart.invalidate()
-
-
         }
     }
-
 
 
     private fun createSet(): LineDataSet {
