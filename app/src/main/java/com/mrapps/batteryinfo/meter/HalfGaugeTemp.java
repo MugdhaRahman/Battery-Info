@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.util.AttributeSet;
 
-public class HalfGauge extends AbstractGauge {
+public class HalfGaugeTemp extends AbstractGauge {
 
     private float needleStart = 30;
     private float needleEnd = 150;
@@ -32,22 +32,22 @@ public class HalfGauge extends AbstractGauge {
         }
     };
 
-    public HalfGauge(Context context) {
+    public HalfGaugeTemp(Context context) {
         super(context);
         init();
     }
 
-    public HalfGauge(Context context, AttributeSet attrs) {
+    public HalfGaugeTemp(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public HalfGauge(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HalfGaugeTemp(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
-    public HalfGauge(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public HalfGaugeTemp(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -117,7 +117,7 @@ public class HalfGauge extends AbstractGauge {
         canvas.save();
         canvas.translate((getWidth() / 2f) - ((getRectRight() / 2f) * getScaleRatio()), getHeight() / 2f - 50f * getScaleRatio());
         canvas.scale(getScaleRatio(), getScaleRatio());
-        canvas.drawText(getFormattedValue() + " mah", 200f, 240f, getTextPaint());
+        canvas.drawText(getFormattedValue() + " °C", 200f, 240f, getTextPaint());
         canvas.restore();
     }
 
@@ -126,7 +126,7 @@ public class HalfGauge extends AbstractGauge {
         canvas.translate((getWidth() / 2f) - ((getRectRight() / 2f) * getScaleRatio()), getHeight() / 2f - 50f * getScaleRatio());
         canvas.scale(getScaleRatio(), getScaleRatio());
         canvas.rotate(26, 10f, 130f);
-        canvas.drawText(getFormattedValue(getMinValue()) + " mah", 10f + getPadding(), 130f, getRangeValue(getMinValueTextColor()));
+        canvas.drawText(getFormattedValue(getMinValue()) + " °C", 10f + getPadding(), 130f, getRangeValue(getMinValueTextColor()));
         canvas.restore();
     }
 
@@ -135,7 +135,7 @@ public class HalfGauge extends AbstractGauge {
         canvas.translate((getWidth() / 2f) - ((getRectRight() / 2f) * getScaleRatio()), getHeight() / 2f - 50f * getScaleRatio());
         canvas.scale(getScaleRatio(), getScaleRatio());
         canvas.rotate(-26, 390f, 130f);
-        canvas.drawText(getFormattedValue(getMaxValue()) + " mah", 390f - getPadding(), 130f, getRangeValue(getMaxValueTextColor()));
+        canvas.drawText(getFormattedValue(getMaxValue()) + " °C", 390f - getPadding(), 130f, getRangeValue(getMaxValueTextColor()));
         canvas.restore();
     }
 

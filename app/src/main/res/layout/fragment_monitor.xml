@@ -179,7 +179,7 @@
                     android:layout_gravity="center"
                     android:orientation="vertical">
 
-                    <com.mrapps.batteryinfo.meter.HalfGauge
+                    <com.mrapps.batteryinfo.meter.HalfGaugeTemp
                         android:id="@+id/halfGaugeTemp"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
@@ -193,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        android:text="Capacity"
+                        android:text="Temperature"
                         android:textColor="@color/textColor"
                         android:textSize="11sp" />
 

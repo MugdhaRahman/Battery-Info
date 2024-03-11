@@ -402,6 +402,7 @@ class FragmentHome : Fragment() {
                 binding.halfGauge.value = currentValue
 
 
+
                 val amp = getAmperage(requireActivity())!!.toFloat()
                 val df = DecimalFormat("#.##")
 
