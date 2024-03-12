@@ -79,6 +79,75 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Temperature Monitor"
+            android:textColor="@color/textColor"
+            android:textSize="16sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/backgroundColor"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="3dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <com.mrapps.batteryinfo.meter.HalfGaugeTemp
+                        android:id="@+id/halfGaugeTemp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_marginStart="5dp" />
+
+                    <TextView
+                        android:id="@+id/temperature"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:text="Temperature"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
+
+
+                <com.rejowan.chart.charts.LineChart
+                    android:id="@+id/tempChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp" />
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,73 +216,6 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Temperature Monitor"
-            android:textColor="@color/textColor"
-            android:textSize="16sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            app:cardBackgroundColor="@color/backgroundColor"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="3dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <com.mrapps.batteryinfo.meter.HalfGaugeTemp
-                        android:id="@+id/halfGaugeTemp"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_marginStart="5dp" />
-
-                    <TextView
-                        android:id="@+id/temperature"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp"
-                        android:text="Temperature"
-                        android:textColor="@color/textColor"
-                        android:textSize="11sp" />
-
-                </LinearLayout>
-
-
-                <com.rejowan.chart.charts.LineChart
-                    android:id="@+id/TempChart"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp" />
-
-            </LinearLayout>
-
-
-        </com.google.android.material.card.MaterialCardView>
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -231,7 +233,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="30dp"
             app:cardBackgroundColor="@color/backgroundColor"
             app:cardCornerRadius="8dp"
             app:cardElevation="3dp">
@@ -247,7 +249,7 @@
                     android:layout_gravity="center"
                     android:orientation="vertical">
 
-                    <com.mrapps.batteryinfo.meter.HalfGauge
+                    <com.mrapps.batteryinfo.meter.HalfGaugeVolt
                         android:id="@+id/halfGaugeVolt"
                         android:layout_width="100dp"
                         android:layout_height="100dp"

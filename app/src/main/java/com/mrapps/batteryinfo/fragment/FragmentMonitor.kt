@@ -73,17 +73,11 @@ class FragmentMonitor : Fragment() {
                     binding.batteryStatus.text = "Discharging"
                 }
 
-                val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-                val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
-                val batteryPct = level / scale.toFloat()
-                val batteryPercentage = (batteryPct * 100).toInt()
-
-                val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
-
                 val batteryManager =
-                    requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                    if (isAdded) requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager else null
                 val chargeCounter =
-                    batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+                    batteryManager?.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+                        ?: -1
                 capacity = (chargeCounter / 1000).toFloat()
 
 
@@ -100,7 +94,7 @@ class FragmentMonitor : Fragment() {
                 //battery temperature
                 val temperature =
                     intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1).toDouble()
-                temp =  decimalFormat.format(temperature / 10).toDouble()
+                temp = decimalFormat.format(temperature / 10).toDouble()
 
 
             }
@@ -127,9 +121,18 @@ class FragmentMonitor : Fragment() {
         setupHalfGauge()
 
         setupBattery()
+
         setupCapacity()
+
+        setupTemp()
+
+        setupVolt()
+
         setupHalfGaugeCapacity()
+
         setupHalfGaugeTemp()
+
+        setupHalfGaugeVolt()
 
     }
 
@@ -207,6 +210,28 @@ class FragmentMonitor : Fragment() {
 
     }
 
+    private fun setupHalfGaugeVolt() {
+
+        rangeVoltage.color = requireContext().getColor(R.color.warningColor)
+        rangeVoltage.from = 0.0
+        rangeVoltage.to = 2.5
+        range2Voltage.color = requireContext().getColor(R.color.green)
+        range2Voltage.to = 2.5
+        range2Voltage.from = 4.5
+        range3Voltage.color = requireContext().getColor(R.color.red)
+        range3Voltage.from = 4.5
+        range3Voltage.to = 6.0
+
+        binding.halfGaugeVolt.addRange(rangeVoltage)
+        binding.halfGaugeVolt.addRange(range2Voltage)
+        binding.halfGaugeVolt.addRange(range3Voltage)
+
+        binding.halfGaugeVolt.setNeedleColor(requireContext().getColor(R.color.needleColor))
+        binding.halfGaugeVolt.valueColor = requireContext().getColor(R.color.textColor)
+        binding.halfGaugeVolt.minValueTextColor = requireContext().getColor(R.color.red)
+        binding.halfGaugeVolt.maxValueTextColor = requireContext().getColor(R.color.green)
+    }
+
     private fun setupBattery() {
         binding.batteryChart.description.isEnabled = false
         binding.batteryChart.setPinchZoom(true)
@@ -256,6 +281,57 @@ class FragmentMonitor : Fragment() {
 
         val data = LineData()
         binding.capacityChart.data = data
+
+    }
+
+    private fun setupTemp() {
+        binding.tempChart.description.isEnabled = false
+        binding.tempChart.setPinchZoom(true)
+        binding.tempChart.setDrawGridBackground(false)
+        binding.tempChart.isDragEnabled = true
+        binding.tempChart.setScaleEnabled(true)
+        binding.tempChart.setTouchEnabled(true)
+
+        val xAxis: XAxis = binding.tempChart.xAxis
+        xAxis.isEnabled = false
+
+        binding.tempChart.axisLeft.isEnabled = false
+        binding.tempChart.axisRight.isEnabled = true
+
+        val yAxis = binding.tempChart.axisRight
+        yAxis.textColor = requireActivity().getColor(R.color.textColor)
+        binding.tempChart.axisLeft.setDrawGridLines(false)
+        binding.tempChart.animateXY(1500, 1500)
+
+        binding.tempChart.legend.isEnabled = false
+
+        val data = LineData()
+        binding.tempChart.data = data
+    }
+
+    private fun setupVolt() {
+        binding.voltChart.description.isEnabled = false
+        binding.voltChart.setPinchZoom(true)
+        binding.voltChart.setDrawGridBackground(false)
+        binding.voltChart.isDragEnabled = true
+        binding.voltChart.setScaleEnabled(true)
+        binding.voltChart.setTouchEnabled(true)
+
+        val xAxis: XAxis = binding.voltChart.xAxis
+        xAxis.isEnabled = false
+
+        binding.voltChart.axisLeft.isEnabled = false
+        binding.voltChart.axisRight.isEnabled = true
+
+        val yAxis = binding.voltChart.axisRight
+        yAxis.textColor = requireActivity().getColor(R.color.textColor)
+        binding.voltChart.axisLeft.setDrawGridLines(false)
+        binding.voltChart.animateXY(1500, 1500)
+
+        binding.voltChart.legend.isEnabled = false
+
+        val data = LineData()
+        binding.voltChart.data = data
 
     }
 
@@ -338,6 +414,59 @@ class FragmentMonitor : Fragment() {
             lineData.notifyDataChanged()
             binding.capacityChart.notifyDataSetChanged()
             binding.capacityChart.invalidate()
+        }
+    }
+
+    private fun updateTemp() {
+
+        val lineData = binding.tempChart.data
+        if (lineData != null) {
+            var set: ILineDataSet? = lineData.getDataSetByIndex(0)
+
+            if (set == null) {
+                set = createSet()
+                lineData.addDataSet(set)
+            }
+
+            lineData.addEntry(Entry(set.entryCount.toFloat(), temp.toFloat()), 0)
+
+            if (set.entryCount > 25) {
+                set.removeFirst()
+                for (i in 0 until set.entryCount) {
+                    val entry = set.getEntryForIndex(i)
+                    entry.x = entry.x - 1
+                }
+            }
+
+            lineData.notifyDataChanged()
+            binding.tempChart.notifyDataSetChanged()
+            binding.tempChart.invalidate()
+        }
+    }
+
+    private fun updateVolt() {
+        val lineData = binding.voltChart.data
+        if (lineData != null) {
+            var set: ILineDataSet? = lineData.getDataSetByIndex(0)
+
+            if (set == null) {
+                set = createSet()
+                lineData.addDataSet(set)
+            }
+
+            lineData.addEntry(Entry(set.entryCount.toFloat(), voltage.toDouble().toFloat()), 0)
+
+            if (set.entryCount > 25) {
+                set.removeFirst()
+                for (i in 0 until set.entryCount) {
+                    val entry = set.getEntryForIndex(i)
+                    entry.x = entry.x - 1
+                }
+            }
+
+            lineData.notifyDataChanged()
+            binding.voltChart.notifyDataSetChanged()
+            binding.voltChart.invalidate()
         }
     }
 
@@ -443,7 +572,7 @@ class FragmentMonitor : Fragment() {
 
         binding.halfGaugeCapacity.value = currentCapacity.toDouble()
 
-        // battery temperature from batteryreceiver
+        // battery temperature
 
 
         binding.halfGaugeTemp.value = temp
@@ -457,6 +586,16 @@ class FragmentMonitor : Fragment() {
 
         binding.halfGaugeTemp.minValue = 0.0
         binding.halfGaugeTemp.maxValue = 50.0
+
+        // battery voltage
+        binding.halfGaugeVolt.value = voltage.toDouble()
+
+        binding.halfGaugeVolt.addRange(rangeVoltage)
+        binding.halfGaugeVolt.addRange(range2Voltage)
+        binding.halfGaugeVolt.addRange(range3Voltage)
+
+        binding.halfGaugeVolt.minValue = 0.0
+        binding.halfGaugeVolt.maxValue = 5.0
 
 
     }
@@ -476,6 +615,10 @@ class FragmentMonitor : Fragment() {
                 updateBattery()
 
                 updateBatteryCapacity()
+
+                updateTemp()
+
+                updateVolt()
 
                 handler.postDelayed(this, 1000)
             }
