@@ -40,21 +40,21 @@ class FragmentMonitor : Fragment() {
 
     val handler = Handler(Looper.getMainLooper())
 
-    val range = Range()
-    val range2 = Range()
+    private val range = Range()
+    private val range2 = Range()
 
-    val rangeCapacity = Range()
-    val range2Capacity = Range()
-    val range3Capacity = Range()
+    private val rangeCapacity = Range()
+    private val range2Capacity = Range()
+    private val range3Capacity = Range()
 
-    val rangeVoltage = Range()
-    val range2Voltage = Range()
-    val range3Voltage = Range()
+    private val rangeVoltage = Range()
+    private val range2Voltage = Range()
+    private val range3Voltage = Range()
 
-    val rangeTemperature = Range()
-    val range2Temperature = Range()
-    val range3Temperature = Range()
-    val range4Temperature = Range()
+    private val rangeTemperature = Range()
+    private val range2Temperature = Range()
+    private val range3Temperature = Range()
+    private val range4Temperature = Range()
 
     var temp = 0.0
 
@@ -577,6 +577,7 @@ class FragmentMonitor : Fragment() {
 
         binding.halfGaugeTemp.value = temp
 
+
         Log.e("TAG", "setupMonitor: $temp")
 
         binding.halfGaugeTemp.addRange(rangeTemperature)
@@ -586,6 +587,10 @@ class FragmentMonitor : Fragment() {
 
         binding.halfGaugeTemp.minValue = 0.0
         binding.halfGaugeTemp.maxValue = 50.0
+
+        if (temp > 50.0) {
+            binding.halfGaugeTemp.maxValue = temp + 5.0
+        }
 
         // battery voltage
         binding.halfGaugeVolt.value = voltage.toDouble()
@@ -597,6 +602,10 @@ class FragmentMonitor : Fragment() {
         binding.halfGaugeVolt.minValue = 0.0
         binding.halfGaugeVolt.maxValue = 5.0
 
+        if (voltage > 5.0) {
+            binding.halfGaugeVolt.maxValue = voltage + 1.0
+        }
+
 
     }
 
@@ -607,7 +616,6 @@ class FragmentMonitor : Fragment() {
         )
 
         val runnable = object : Runnable {
-            @SuppressLint("SetTextI18n")
             override fun run() {
 
                 setupMonitor()
