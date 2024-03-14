@@ -25,6 +25,8 @@ import com.rejowan.chart.data.LineDataSet
 import com.rejowan.chart.interfaces.datasets.ILineDataSet
 import java.text.DecimalFormat
 import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class FragmentMonitor : Fragment() {
 
@@ -40,12 +42,12 @@ class FragmentMonitor : Fragment() {
 
     val handler = Handler(Looper.getMainLooper())
 
-    private val range = Range()
-    private val range2 = Range()
+    private var maxPower = 0.00
+    private var minPower = 0.00
+    private val powerAverageList = mutableListOf<Double>()
+    private var count = 0
 
-    private val rangeCapacity = Range()
-    private val range2Capacity = Range()
-    private val range3Capacity = Range()
+    private var startCapacity = 0f
 
     private val rangeVoltage = Range()
     private val range2Voltage = Range()
@@ -69,8 +71,10 @@ class FragmentMonitor : Fragment() {
 
                 if (isCharging) {
                     binding.batteryStatus.text = "Charging"
+                    binding.batteryStatus.setTextColor(requireActivity().getColor(R.color.green))
                 } else {
                     binding.batteryStatus.text = "Discharging"
+                    binding.batteryStatus.setTextColor(requireActivity().getColor(R.color.red))
                 }
 
                 val batteryManager =
@@ -118,8 +122,6 @@ class FragmentMonitor : Fragment() {
             isReceiverRegistered = true
         }
 
-        setupHalfGauge()
-
         setupBattery()
 
         setupCapacity()
@@ -128,59 +130,71 @@ class FragmentMonitor : Fragment() {
 
         setupVolt()
 
-        setupHalfGaugeCapacity()
-
         setupHalfGaugeTemp()
 
         setupHalfGaugeVolt()
 
     }
 
-    private fun setupHalfGauge() {
+    private fun startCapacity() {
+        val batteryManager =
+            requireActivity().getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        val chargeCounter =
+            batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
+        startCapacity = chargeCounter / 1000f
 
-        range.color = requireContext().getColor(R.color.red)
-        range.from = -1000.00
-        range.to = 0.00
+        binding.startCapacity.text = buildString {
+            append(startCapacity)
+            append(" mAh")
 
-        range2.color = requireContext().getColor(R.color.green)
-        range2.from = 1.00
-        range2.to = 1000.00
-
-        //add color ranges to gauge
-        binding.halfGauge.addRange(range)
-        binding.halfGauge.addRange(range2)
-
-        binding.halfGauge.setNeedleColor(requireContext().getColor(R.color.needleColor))
-        binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
-        binding.halfGauge.minValueTextColor = requireContext().getColor(R.color.red)
-        binding.halfGauge.maxValueTextColor = requireContext().getColor(R.color.green)
-
+        }
     }
 
-    private fun setupHalfGaugeCapacity() {
+//    private fun setupHalfGauge() {
+//
+//        range.color = requireContext().getColor(R.color.red)
+//        range.from = -1000.00
+//        range.to = 0.00
+//
+//        range2.color = requireContext().getColor(R.color.green)
+//        range2.from = 1.00
+//        range2.to = 1000.00
+//
+//        //add color ranges to gauge
+//        binding.halfGauge.addRange(range)
+//        binding.halfGauge.addRange(range2)
+//
+//        binding.halfGauge.setNeedleColor(requireContext().getColor(R.color.needleColor))
+//        binding.halfGauge.valueColor = requireContext().getColor(R.color.textColor)
+//        binding.halfGauge.minValueTextColor = requireContext().getColor(R.color.red)
+//        binding.halfGauge.maxValueTextColor = requireContext().getColor(R.color.green)
+//
+//    }
 
-        val totalCapacity = getBatteryCapacity(requireContext())
-
-        rangeCapacity.color = requireContext().getColor(R.color.red)
-        rangeCapacity.from = 0.0
-        rangeCapacity.to = totalCapacity / 4 - 1
-        range2Capacity.color = requireContext().getColor(R.color.warningColor)
-        range2Capacity.to = totalCapacity / 4
-        range2Capacity.from = totalCapacity / 2 - 1
-        range3Capacity.color = requireContext().getColor(R.color.green)
-        range3Capacity.from = totalCapacity / 2
-        range3Capacity.to = totalCapacity
-
-        binding.halfGaugeCapacity.addRange(rangeCapacity)
-        binding.halfGaugeCapacity.addRange(range2Capacity)
-        binding.halfGaugeCapacity.addRange(range3Capacity)
-
-        binding.halfGaugeCapacity.setNeedleColor(requireContext().getColor(R.color.needleColor))
-        binding.halfGaugeCapacity.valueColor = requireContext().getColor(R.color.textColor)
-        binding.halfGaugeCapacity.minValueTextColor = requireContext().getColor(R.color.red)
-        binding.halfGaugeCapacity.maxValueTextColor = requireContext().getColor(R.color.green)
-
-    }
+//    private fun setupHalfGaugeCapacity() {
+//
+//        val totalCapacity = getBatteryCapacity(requireContext())
+//
+//        rangeCapacity.color = requireContext().getColor(R.color.red)
+//        rangeCapacity.from = 0.0
+//        rangeCapacity.to = totalCapacity / 4 - 1
+//        range2Capacity.color = requireContext().getColor(R.color.warningColor)
+//        range2Capacity.to = totalCapacity / 4
+//        range2Capacity.from = totalCapacity / 2 - 1
+//        range3Capacity.color = requireContext().getColor(R.color.green)
+//        range3Capacity.from = totalCapacity / 2
+//        range3Capacity.to = totalCapacity
+//
+//        binding.halfGaugeCapacity.addRange(rangeCapacity)
+//        binding.halfGaugeCapacity.addRange(range2Capacity)
+//        binding.halfGaugeCapacity.addRange(range3Capacity)
+//
+//        binding.halfGaugeCapacity.setNeedleColor(requireContext().getColor(R.color.needleColor))
+//        binding.halfGaugeCapacity.valueColor = requireContext().getColor(R.color.textColor)
+//        binding.halfGaugeCapacity.minValueTextColor = requireContext().getColor(R.color.red)
+//        binding.halfGaugeCapacity.maxValueTextColor = requireContext().getColor(R.color.green)
+//
+//    }
 
     private fun setupHalfGaugeTemp() {
 
@@ -353,8 +367,7 @@ class FragmentMonitor : Fragment() {
             lineData.addEntry(
                 getAmperage(requireContext())?.let {
                     Entry(
-                        set.entryCount.toFloat(),
-                        it.toFloat()
+                        set.entryCount.toFloat(), it.toFloat()
                     )
                 }, 0
             )
@@ -535,7 +548,41 @@ class FragmentMonitor : Fragment() {
 
     fun setupMonitor() {
 
-        val maxIn = getAmperage(requireActivity())!!.toFloat()
+        count++
+
+        val amp = getAmperage(requireActivity())!!.toFloat()
+        val df = DecimalFormat("#.##")
+
+        if (amp < 0) {
+            minPower = min(minPower, amp.toDouble())
+        }
+        if (amp > 0) {
+            maxPower = max(maxPower, amp.toDouble())
+        }
+
+        binding.maxInPower.text = buildString {
+            append(df.format(maxPower))
+            append(" mA")
+        }
+
+        binding.maxOutPower.text = buildString {
+            append(df.format(minPower))
+            append(" mA")
+        }
+
+        if (count % 3 == 0) {
+            count = 0
+            powerAverageList.clear()
+        } else {
+            powerAverageList.add(amp.toDouble())
+            val averagePower = powerAverageList.average()
+            binding.averagePower.text = buildString {
+                append(df.format(averagePower))
+                append(" mA")
+            }
+        }
+
+
         val totalCapacity = getBatteryCapacity(requireContext())
 
         val batteryManager =
@@ -544,33 +591,16 @@ class FragmentMonitor : Fragment() {
             batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER)
         val currentCapacity = chargeCounter / 1000
 
-        if (maxIn >= range2.to) {
-            range2.to = maxIn.toDouble() + 1000
-            range.from = -range2.to
-            binding.halfGauge.maxValue = range2.to
-            binding.halfGauge.minValue = range.from
-        } else {
-            range.from = -1000.00
-            range2.to = 1000.0
-            binding.halfGauge.minValue = -1000.00
-            binding.halfGauge.maxValue = 1000.00
+
+        binding.endCapacity.text = buildString {
+            append(currentCapacity)
+            append(" mAh")
         }
 
-        //add color ranges to gauge
-        binding.halfGauge.addRange(range)
-        binding.halfGauge.addRange(range2)
-
-        val currentValue = getAmperage(requireActivity())?.toDouble() ?: 0.0
-        binding.halfGauge.value = currentValue
-
-        binding.halfGaugeCapacity.addRange(rangeCapacity)
-        binding.halfGaugeCapacity.addRange(range2Capacity)
-        binding.halfGaugeCapacity.addRange(range3Capacity)
-
-        binding.halfGaugeCapacity.minValue = 0.0
-        binding.halfGaugeCapacity.maxValue = totalCapacity
-
-        binding.halfGaugeCapacity.value = currentCapacity.toDouble()
+        binding.totalCapacity.text = buildString {
+            append(totalCapacity)
+            append(" mAh")
+        }
 
         // battery temperature
 
@@ -633,6 +663,8 @@ class FragmentMonitor : Fragment() {
         }
 
         handler.post(runnable)
+
+        startCapacity()
 
 
     }
