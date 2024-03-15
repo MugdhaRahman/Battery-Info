@@ -55,4 +55,7 @@ dependencies {
     // MPAndroidChart
     implementation("com.github.r3jo1:MPAndroidChart-Reworked:1.0")
 
+    //for lottie animation
+    implementation("com.airbnb.android:lottie:6.2.0")
+
 }

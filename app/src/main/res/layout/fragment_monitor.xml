@@ -381,12 +381,12 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@color/colorPrimary"
                     android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
                     android:padding="5dp"
                     android:text="Voltage Monitor"
                     android:textColor="@color/white"
