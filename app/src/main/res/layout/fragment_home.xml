@@ -14,7 +14,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="10dp"
-        app:cardBackgroundColor="@color/backgroundColor"
+        app:cardBackgroundColor="@color/backgroundColorCard"
         app:cardCornerRadius="8dp"
         app:cardElevation="3dp">
 
@@ -146,7 +146,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
-                app:cardBackgroundColor="@color/backgroundColor"
+                app:cardBackgroundColor="@color/backgroundColorCard"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="3dp">
 
@@ -346,7 +346,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/backgroundColor"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -404,7 +404,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/backgroundColor"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -463,7 +463,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/backgroundColor"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -532,7 +532,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -589,7 +589,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -646,7 +646,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -714,7 +714,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -773,7 +773,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 
@@ -831,7 +831,7 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
+                    app:cardBackgroundColor="@color/backgroundColorCard"
                     app:cardCornerRadius="8dp"
                     app:cardElevation="3dp">
 

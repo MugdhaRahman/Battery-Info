@@ -7,6 +7,7 @@
     <color name="textColor">#212121</color>
     <color name="textColorSecondary">#424242</color>
     <color name="backgroundColor">#FFFFFF</color>
+    <color name="backgroundColorCard">#FFFFFF</color>
     <color name="needleColor">#FF000000</color>
 
     <color name="roundedReactBgColor">#FFFFFF</color>

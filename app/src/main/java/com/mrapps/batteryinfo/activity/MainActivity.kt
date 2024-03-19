@@ -1,5 +1,6 @@
 package com.mrapps.batteryinfo.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +26,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNav()
+
+        binding.settings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+
+        }
 
     }
 
@@ -67,7 +73,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     data class BatteryData(val batteryLevel: Int, val time: Int)
-
 
 
 }
