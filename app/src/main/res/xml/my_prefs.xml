@@ -15,6 +15,13 @@
             android:summary="Enable dark theme"
             android:title="Dark theme" />
 
+        <ListPreference
+            android:defaultValue="system_default"
+            android:key="pref_notification"
+            android:icon="@drawable/ic_pref_notificastion"
+            android:summary="Battery status notification"
+            android:title="Notification" />
+
 
     </PreferenceCategory>
 

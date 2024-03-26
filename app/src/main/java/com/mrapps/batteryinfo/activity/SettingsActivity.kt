@@ -44,9 +44,17 @@ class SettingsActivity : AppCompatActivity() {
             val rateUsPref = findPreference<androidx.preference.Preference>("pref_rate")
             val privacyPolicyPref = findPreference<androidx.preference.Preference>("pref_privacy")
             val createdByPref = findPreference<androidx.preference.Preference>("pref_creator")
+            val notificationPref =
+                findPreference<androidx.preference.Preference>("pref_notification")
 
             appVersionPref?.summary = "Version " + Constants.appVersion
             createdByPref?.summary = "" + Constants.companyName
+
+
+            notificationPref?.setOnPreferenceClickListener {
+                startActivity(Intent(requireContext(), BatteryNotification::class.java))
+                true
+            }
 
             contactUsPref?.setOnPreferenceClickListener {
                 val email = Intent(Intent.ACTION_SEND)
