@@ -31,8 +31,25 @@ class BatteryNotification : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 binding.chargingFullAlarmPercent.text = "$progress%"
-                binding.abv.chargeLevel = progress
+                progress.also { binding.abv.chargeLevel = it }
                 binding.abv.invalidate()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+        })
+
+        binding.seekbarChargingAlarmLow.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            @SuppressLint("SetTextI18n")
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.chargingFullAlarmPercentLow.text = "$progress%"
+                binding.abvLow.chargeLevel = progress
+                binding.abvLow.invalidate()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {

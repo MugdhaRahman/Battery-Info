@@ -85,10 +85,14 @@
                     android:layout_marginBottom="10dp"
                     app:abvBatteryOrientation="portrait"
                     app:abvChargeLevel="80"
-                    app:abvNormalBgColor="@color/colorPrimary_grey"
+                    app:abvCriticalBgColor="@color/green_light"
+                    app:abvCriticalLevelColor="@color/green"
+                    app:abvNormalBgColor="@color/green_light"
                     app:abvNormalLevelColor="@color/green"
                     app:abvRadius="8"
-                    app:abvSize="24" />
+                    app:abvSize="24"
+                    app:abvWarningBgColor="@color/green_light"
+                    app:abvWarningLevelColor="@color/green" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -194,6 +198,8 @@
                     android:layout_marginBottom="10dp"
                     app:abvBatteryOrientation="portrait"
                     app:abvChargeLevel="20"
+                    app:abvNormalBgColor="@color/lightRed"
+                    app:abvNormalLevelColor="@color/red"
                     app:abvRadius="8"
                     app:abvSize="24"
                     app:abvWarningBgColor="@color/lightRed"
