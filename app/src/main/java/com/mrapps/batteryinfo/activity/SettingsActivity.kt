@@ -52,7 +52,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
             notificationPref?.setOnPreferenceClickListener {
-                startActivity(Intent(requireContext(), BatteryNotification::class.java))
+                startActivity(Intent(requireActivity(), BatteryNotification::class.java))
                 true
             }
 
