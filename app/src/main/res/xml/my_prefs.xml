@@ -16,8 +16,8 @@
             android:title="Dark theme" />
 
         <Preference
-            android:key="pref_notification"
             android:icon="@drawable/ic_pref_notificastion"
+            android:key="pref_notification"
             android:summary="Battery status notification"
             android:title="Notification" />
 
@@ -55,7 +55,7 @@
         <Preference
             android:icon="@drawable/ic_pref_creator"
             android:key="pref_creator"
-            android:summary="Androvine"
+            android:summary="MR Apps"
             android:title="Created by" />
 
 
