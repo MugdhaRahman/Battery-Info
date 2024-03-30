@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.widget.SeekBar
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.mrapps.batteryinfo.BatteryMonitoringService
-import com.mrapps.batteryinfo.ViewModelNotification
 import com.mrapps.batteryinfo.databinding.ActivityBatteryNotificationBinding
 
 class BatteryNotification : AppCompatActivity() {
@@ -15,8 +13,6 @@ class BatteryNotification : AppCompatActivity() {
     private val binding: ActivityBatteryNotificationBinding by lazy {
         ActivityBatteryNotificationBinding.inflate(layoutInflater)
     }
-
-    private val viewModel: ViewModelNotification by viewModels()
 
 
     @SuppressLint("SetTextI18n")
@@ -32,30 +28,11 @@ class BatteryNotification : AppCompatActivity() {
 
         setupSwitch()
 
-        viewModel.chargingAlarmEnabled.observe(this) { enabled ->
-            binding.switchChargingAlarm.isChecked = enabled
-        }
 
-        viewModel.lowBatteryAlarmEnabled.observe(this) { enabled ->
-            binding.switchLowBatteryAlarm.isChecked = enabled
-        }
-
-        viewModel.chargingAlarmProgress.observe(this) { progress ->
-            binding.chargingFullAlarmPercent.text = "$progress%"
-            binding.abv.chargeLevel = progress
-            binding.abv.invalidate()
-        }
-
-        viewModel.lowBatteryAlarmProgress.observe(this) { progress ->
-            binding.chargingFullAlarmPercentLow.text = "$progress%"
-            binding.abvLow.chargeLevel = progress
-            binding.abvLow.invalidate()
-        }
     }
 
     private fun setupSwitch() {
         binding.switchChargingAlarm.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.setChargingAlarmEnabled(isChecked)
             if (isChecked) {
                 startBatteryMonitoringService()
             } else {
@@ -63,8 +40,12 @@ class BatteryNotification : AppCompatActivity() {
             }
         }
 
-        binding.switchLowBatteryAlarm.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.setLowBatteryAlarmEnabled(isChecked)
+        binding.switchLowBatteryAlarm.setOnCheckedChangeListener { _, _ ->
+            if (binding.switchLowBatteryAlarm.isChecked) {
+                startBatteryMonitoringService()
+            } else {
+                stopBatteryMonitoringService()
+            }
         }
     }
 
@@ -73,7 +54,6 @@ class BatteryNotification : AppCompatActivity() {
             SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.setChargingAlarmProgress(progress)
                 binding.chargingFullAlarmPercent.text = "$progress%"
                 binding.abv.chargeLevel = progress
                 binding.abv.invalidate()
@@ -87,7 +67,6 @@ class BatteryNotification : AppCompatActivity() {
             SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel.setLowBatteryAlarmProgress(progress)
                 binding.chargingFullAlarmPercentLow.text = "$progress%"
                 binding.abvLow.chargeLevel = progress
                 binding.abvLow.invalidate()

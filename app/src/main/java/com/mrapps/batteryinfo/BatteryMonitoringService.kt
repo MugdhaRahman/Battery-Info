@@ -12,19 +12,15 @@ import android.os.BatteryManager
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.ViewModelProvider
 import com.mrapps.batteryinfo.activity.BatteryNotification
 
 class BatteryMonitoringService : Service() {
 
     private lateinit var batteryStatusReceiver: BroadcastReceiver
-    private lateinit var viewModel: ViewModelNotification
 
     override fun onCreate() {
         super.onCreate()
 
-        viewModel = ViewModelProvider.AndroidViewModelFactory.getInstance(application)
-            .create(ViewModelNotification::class.java)
 
         batteryStatusReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -32,8 +28,8 @@ class BatteryMonitoringService : Service() {
                 val status: Int = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
                 val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING
 
-                val chargingThreshold = viewModel.chargingAlarmProgress.value ?: 80
-                val lowBatteryThreshold = viewModel.lowBatteryAlarmProgress.value ?: 15
+                val chargingThreshold = 80
+                val lowBatteryThreshold = 15
 
                 if (!isCharging && level <= lowBatteryThreshold) {
                     showLowBatteryNotification(level)
