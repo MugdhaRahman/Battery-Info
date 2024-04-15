@@ -6,7 +6,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
-import com.androvine.statussaver.constants.Constants
+import com.mrapps.batteryinfo.constants.Constants
 import com.mrapps.batteryinfo.R
 import com.mrapps.batteryinfo.databinding.ActivitySettingsBinding
 

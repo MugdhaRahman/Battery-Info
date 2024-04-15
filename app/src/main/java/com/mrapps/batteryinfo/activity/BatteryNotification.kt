@@ -1,89 +1,86 @@
 package com.mrapps.batteryinfo.activity
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import com.mrapps.batteryinfo.BatteryMonitoringService
 import com.mrapps.batteryinfo.databinding.ActivityBatteryNotificationBinding
 
 class BatteryNotification : AppCompatActivity() {
 
-    private val binding: ActivityBatteryNotificationBinding by lazy {
-        ActivityBatteryNotificationBinding.inflate(layoutInflater)
-    }
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var binding: ActivityBatteryNotificationBinding
 
-
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityBatteryNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        sharedPreferences = getSharedPreferences("BatteryPrefs", Context.MODE_PRIVATE)
 
         binding.ivBack.setOnClickListener {
             finish()
         }
 
         setupSeekBar()
-
         setupSwitch()
-
-
     }
 
     private fun setupSwitch() {
-        binding.switchChargingAlarm.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                startBatteryMonitoringService()
-            } else {
-                stopBatteryMonitoringService()
-            }
-        }
-
-        binding.switchLowBatteryAlarm.setOnCheckedChangeListener { _, _ ->
-            if (binding.switchLowBatteryAlarm.isChecked) {
-                startBatteryMonitoringService()
-            } else {
-                stopBatteryMonitoringService()
-            }
-        }
+        // Add your switch setup code here
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupSeekBar() {
-        binding.seekbarChargingAlarm.setOnSeekBarChangeListener(object :
-            SeekBar.OnSeekBarChangeListener {
+        val chargingAlarmSeekBar = binding.seekbarChargingAlarm
+        val chargingAlarmPercentTextView = binding.chargingFullAlarmPercent
+        val abv = binding.abv
+
+        val chargingAlarmLowSeekBar = binding.seekbarChargingAlarmLow
+        val chargingAlarmPercentLowTextView = binding.chargingFullAlarmPercentLow
+        val abvLow = binding.abvLow
+
+        // Retrieve previously saved values, defaulting to 0 if not found
+        val savedChargingAlarmValue = sharedPreferences.getInt("chargingAlarmValue", 80)
+        val savedChargingAlarmLowValue = sharedPreferences.getInt("chargingAlarmLowValue", 20)
+
+        // Initialize SeekBars and TextViews with saved values
+        chargingAlarmSeekBar.progress = savedChargingAlarmValue
+        chargingAlarmPercentTextView.text = "$savedChargingAlarmValue%"
+        abv.chargeLevel = savedChargingAlarmValue
+        abv.invalidate()
+
+        chargingAlarmLowSeekBar.progress = savedChargingAlarmLowValue
+        chargingAlarmPercentLowTextView.text = "$savedChargingAlarmLowValue%"
+        abvLow.chargeLevel = savedChargingAlarmLowValue
+        abvLow.invalidate()
+
+        chargingAlarmSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.chargingFullAlarmPercent.text = "$progress%"
-                binding.abv.chargeLevel = progress
-                binding.abv.invalidate()
+                chargingAlarmPercentTextView.text = "$progress%"
+                abv.chargeLevel = progress
+                abv.invalidate()
+                sharedPreferences.edit().putInt("chargingAlarmValue", progress).apply()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        binding.seekbarChargingAlarmLow.setOnSeekBarChangeListener(object :
+        chargingAlarmLowSeekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             @SuppressLint("SetTextI18n")
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                binding.chargingFullAlarmPercentLow.text = "$progress%"
-                binding.abvLow.chargeLevel = progress
-                binding.abvLow.invalidate()
+                chargingAlarmPercentLowTextView.text = "$progress%"
+                abvLow.chargeLevel = progress
+                abvLow.invalidate()
+                sharedPreferences.edit().putInt("chargingAlarmLowValue", progress).apply()
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
-    }
-
-    private fun startBatteryMonitoringService() {
-        val serviceIntent = Intent(this, BatteryMonitoringService::class.java)
-        startService(serviceIntent)
-    }
-
-    private fun stopBatteryMonitoringService() {
-        val serviceIntent = Intent(this, BatteryMonitoringService::class.java)
-        stopService(serviceIntent)
     }
 }

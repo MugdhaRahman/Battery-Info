@@ -1,4 +1,4 @@
-package com.androvine.statussaver.constants
+package com.mrapps.batteryinfo.constants
 
 class Constants {
 
