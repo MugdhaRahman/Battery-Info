@@ -27,10 +27,6 @@ class BatteryNotification : AppCompatActivity() {
         setupSwitch()
     }
 
-    private fun setupSwitch() {
-        // Add your switch setup code here
-    }
-
     @SuppressLint("SetTextI18n")
     private fun setupSeekBar() {
         val chargingAlarmSeekBar = binding.seekbarChargingAlarm
@@ -82,5 +78,38 @@ class BatteryNotification : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
+    }
+
+
+    private fun setupSwitch() {
+        binding.switchChargingAlarm.setOnCheckedChangeListener { _, _ ->
+
+            if (binding.switchChargingAlarm.isChecked) {
+               sendFullBatteryNotification()
+            } else {
+                binding.switchLowBatteryAlarm.isChecked = false
+            }
+
+        }
+
+        binding.switchLowBatteryAlarm.setOnCheckedChangeListener { _, _ ->
+
+            if (binding.switchLowBatteryAlarm.isChecked) {
+                sendLowBatteryNotification()
+            } else {
+                binding.switchChargingAlarm.isChecked = false
+            }
+
+        }
+    }
+
+    private fun sendLowBatteryNotification() {
+
+
+    }
+
+    private fun sendFullBatteryNotification() {
+
+
     }
 }
