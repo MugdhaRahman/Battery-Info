@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import com.mrapps.batteryinfo.R
 import com.mrapps.batteryinfo.databinding.FragmentHomeBinding
 import com.mrapps.batteryinfo.meter.Range
-import java.lang.Double.*
+import java.lang.Double.isNaN
 import java.text.DecimalFormat
 import kotlin.math.abs
 import kotlin.math.max
@@ -158,9 +158,6 @@ class FragmentHome : Fragment() {
                     }
                 }
 
-                //battery technology
-                binding.technology.text = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY)
-
                 // power source
                 when (intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0)) {
                     BatteryManager.BATTERY_PLUGGED_AC -> {
@@ -187,6 +184,10 @@ class FragmentHome : Fragment() {
                     }
                 }
 
+                //battery technology
+                binding.technology.text = intent.getStringExtra(BatteryManager.EXTRA_TECHNOLOGY)
+
+
                 if (!isCharging) {
                     binding.llChargingTime.visibility = View.GONE
                     binding.llBackupTime.visibility = View.VISIBLE
@@ -195,12 +196,8 @@ class FragmentHome : Fragment() {
                     binding.llBackupTime.visibility = View.GONE
                 }
 
-
-
-
-
-
                 binding.abv.attachBatteryIntent(intent)
+
             }
         }
     }
@@ -400,7 +397,6 @@ class FragmentHome : Fragment() {
                 }
 
                 binding.halfGauge.value = currentValue
-
 
 
                 val amp = getAmperage(requireActivity())!!.toFloat()
