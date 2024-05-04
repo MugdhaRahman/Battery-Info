@@ -63,4 +63,7 @@ dependencies {
     // for preference
     implementation("androidx.preference:preference-ktx:1.2.1")
 
+    //multi dex
+    implementation("androidx.multidex:multidex:2.0.1")
+
 }

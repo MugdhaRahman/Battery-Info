@@ -34,7 +34,6 @@ class FragmentHome : Fragment() {
 
     private var isReceiverRegistered = false
 
-
     val batteryUseList = mutableListOf<Int>()
 
     var count = 0
