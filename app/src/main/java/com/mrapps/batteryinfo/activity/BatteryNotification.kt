@@ -31,6 +31,7 @@ class BatteryNotification : AppCompatActivity() {
     // Notification IDs
     private val NOTIFICATION_ID_HIGH = 1
     private val NOTIFICATION_ID_LOW = 2
+
     private lateinit var notificationManager: NotificationManagerCompat
 
 
@@ -185,14 +186,7 @@ class BatteryNotification : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Register battery receiver here...
         registerBatteryReceiver()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        // Unregister battery receiver here...
-        unregisterBatteryReceiver()
     }
 
     private fun registerBatteryReceiver() {
@@ -244,6 +238,11 @@ class BatteryNotification : AppCompatActivity() {
         } catch (e: IllegalArgumentException) {
             // Receiver may not be registered
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterBatteryReceiver()
     }
 
 }
