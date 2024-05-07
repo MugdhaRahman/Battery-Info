@@ -5,5 +5,5 @@
 <a href="https://github.com/MugdhaRahman/Status-Saver/blob/master/LICENSE"><img src="https://img.shields.io/github/license/ahmmedrejowan/DeviceInfo" alt="GitHub license"/></a>
 
 
- <img src="https://github.com/MugdhaRahman/Battery-Info/assets/113788414/ce4cfd6d-583e-41e9-a487-966827542737" width = "100" height = "100" "/>
+ <img src="https://github.com/MugdhaRahman/Battery-Info/assets/113788414/ce4cfd6d-583e-41e9-a487-966827542737" width = "100" height = "100" alt=""/>
 
