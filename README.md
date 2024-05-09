@@ -7,3 +7,10 @@
 
  <img src="https://github.com/MugdhaRahman/Battery-Info/assets/113788414/ce4cfd6d-583e-41e9-a487-966827542737" width = "100" height = "100" alt=""/>
 
+ An app for monitor battery, charging info, voltage and temperature and also<br>
+ see all battery info
+
+ # Screenshots
+
+
+
