@@ -23,3 +23,21 @@
 |Shot 4|Shot 5|Shot 6|
 |---|---|---|
 | ![shot4](https://github.com/MugdhaRahman/Battery-Info/assets/113788414/d8e96e3e-1f19-41d5-902a-6884a26acbc5) | ![shot5](https://github.com/MugdhaRahman/Battery-Info/assets/113788414/f511309a-3f7f-494c-a670-4e187e3966b8) | ![shot6](https://github.com/MugdhaRahman/Battery-Info/assets/113788414/4f860967-f431-4406-87d1-f08def95e40f) | 
+
+## Features
+This app has three main features
+
+**Battery Monitor**
+- Monitor batterry charging and discharging mah live with graph
+- Monitor battery capacity
+- Monitor battery temperature with meter
+- Monitor battery voltage with meter
+
+**Battery Information**
+- See all battery information
+- This app also can show battery health level
+
+**Battery Notification**
+- You can Set battery charging notification
+- Turn on the notification for battery full and low at your desire level and get notified when it's done.
+
