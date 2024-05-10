@@ -1,12 +1,17 @@
 package com.mrapps.batteryinfo.activity
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.SeekBar
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.mrapps.batteryinfo.databinding.ActivityBatteryNotificationBinding
 import com.mrapps.batteryinfo.utils.BackgroundService
 
@@ -14,6 +19,12 @@ class BatteryNotification : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var binding: ActivityBatteryNotificationBinding
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+    ) { _: Boolean ->
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +40,8 @@ class BatteryNotification : AppCompatActivity() {
         setupSwitch()
 
         setupSeekBar()
+
+        askNotificationPermission()
     }
 
     private fun setupSwitch() {
@@ -130,4 +143,17 @@ class BatteryNotification : AppCompatActivity() {
         intent.putExtra("TYPE", type)
         startService(intent)
     }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+
 }
