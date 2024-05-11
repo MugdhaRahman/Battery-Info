@@ -41,3 +41,41 @@ This app has three main features
 - You can Set battery charging notification
 - Turn on the notification for battery full and low at your desire level and get notified when it's done.
 
+## Download
+
+You can download the latest version (1.0) APK from here
+
+<a href="https://github.com/MugdhaRahman/Battery-Info/releases/download/1.0.0/app-release.apk">
+<img src="https://raw.githubusercontent.com/ahmmedrejowan/DeviceInfo/master/files/download.png" width="256px" align="center"/>
+</a>
+
+<br>
+
+Check out the [releases](https://github.com/MugdhaRahman/Battery-Info/releases) section for more details.
+
+## Tech Stack
+<p><strong>Programming Languages</strong></p>
+<ul>
+<li><strong>Java &amp; Kotlin</strong>: For robust and efficient app development.</li>
+<li><strong>XML</strong>: To craft the user interface with precision.</li>
+<p><strong>Integrated Development Environment (IDE)</strong></p>
+<ul>
+<li><strong>Android Studio</strong>: The official IDE for Android development, providing a comprehensive suite of tools for building apps.</li>
+</ul>
+<p><strong>Design Tools</strong></p>
+<ul>
+<li><strong>Figma</strong>: Utilized for high-fidelity UI/UX design and prototyping.</li>
+</ul>
+<p><strong>Libraries</strong></p>
+<ul>
+<li><strong><a href="https://github.com/airbnb/lottie-android" target="_blank" rel="noopener noreferrer">Lottie</a></strong>: For adding high-quality animations to the app.</li>
+<li><strong><a href="https://https://github.com/ahmmedrejowan/AndroidBatteryView" target="_new">AndroidBatteryView</a></strong>: For Live battery status view.</li>
+ <li><strong><a href="https://https://github.com/PhilJay/MPAndroidChart" target="_new">MPAndroidChart</a></strong>: For battery monitoring chart.</li>
+
+</ul>
+<p><strong>Version Control</strong></p>
+<ul>
+<li><strong>GitHub</strong>: Used for source code management, allowing for collaborative development and version tracking.</li>
+</ul>
+
+
